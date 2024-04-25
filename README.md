@@ -1,1 +1,1 @@
-Rules Semgrep
+**Rules Semgrep**
