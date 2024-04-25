@@ -1,5 +1,5 @@
 rules:
-  - id: find-sql-string-concatenation
+  - id: find-sql-string-concatenation-struts
     message: In Class $CLASS method $METHOD, $X is used to construct a SQL query via string concatenation and get parameter $VALUE via function $XF.
     languages:
       - java
