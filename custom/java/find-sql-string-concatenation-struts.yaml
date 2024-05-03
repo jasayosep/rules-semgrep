@@ -1,6 +1,8 @@
 rules:
   - id: find-sql-string-concatenation-struts
-    message: (CustomRules) In Class `$CLASS` method `$METHOD`, `$X` is used to construct a SQL query via string concatenation and get parameter `$VALUE` using function `$XF`.
+    message: >-
+      (CustomRules) SQL Injection In Class `$CLASS` method `$METHOD`
+      `$X` is used to construct a SQL query via string concatenation and get parameter `$VALUE` using function `$XF`.
     languages:
       - java
     severity: ERROR
