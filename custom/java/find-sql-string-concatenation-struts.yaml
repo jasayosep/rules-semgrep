@@ -10,18 +10,19 @@ rules:
     patterns:
     - pattern-inside: |
         class $CLASS {
-          $METHOD(..., $TYPE $X, ...) {
+          $METHOD(...) {
             ...
           }
         }
     - patterns:
       - pattern-either:
-        - pattern: $QUERY += $X.getString($VALUE)
-        - pattern: $QUERY += $X.getString($VALUE) + ...
-        - pattern: $QUERY += ... + $X.getString($VALUE)
-        - pattern: $QUERY += ... + $X.getString($VALUE) + ...
-        - pattern: ... + $X.getString($VALUE) + ...
-        - pattern: ... + $X.getString($VALUE)
+        - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE) + ...
+        - pattern: $QUERY += $X.$XF($VALUE)
+        - pattern: $QUERY += $X.$XF($VALUE) + ...
+        - pattern: $QUERY += ... + $X.$XF($VALUE)
+        - pattern: $QUERY += ... + $X.$XF($VALUE) + ...
+        - pattern: ... + $X.$XF($VALUE) + ...
+        - pattern: ... + $X.$XF($VALUE)
     metadata:
       category: security
       technology:
