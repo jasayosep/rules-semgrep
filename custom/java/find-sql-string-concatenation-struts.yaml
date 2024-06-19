@@ -1,28 +1,30 @@
 rules:
   - id: find-sql-string-concatenation-struts
     message: >-
-      (CustomRules) SQL Injection In Class `$CLASS` method `$METHOD`
+      (CustomRules) SQL Injection In Class `$CLASS` method `$METHOD`.
       `$X` is used to construct a SQL query via string concatenation and get parameter `$VALUE` using function `$XF`.
     languages:
       - java
     severity: ERROR
     
     patterns:
-    - pattern-inside: |
-        class $CLASS {
-          $METHOD(...) {
-            ...
+      - pattern-inside: |
+          class $CLASS {
+            $METHOD(...) {
+              ...
+            }
           }
-        }
-    - patterns:
       - pattern-either:
         - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE) + ...
+        - pattern: $QUERY = ... + $X.$XF($VALUE) + ...
         - pattern: $QUERY += $X.$XF($VALUE)
         - pattern: $QUERY += $X.$XF($VALUE) + ...
         - pattern: $QUERY += ... + $X.$XF($VALUE)
         - pattern: $QUERY += ... + $X.$XF($VALUE) + ...
         - pattern: ... + $X.$XF($VALUE) + ...
         - pattern: ... + $X.$XF($VALUE)
+      - pattern-not-regex: .+setString(.+)
+      - pattern-not-regex: .+getAttribute(.+)
     metadata:
       category: security
       technology:
