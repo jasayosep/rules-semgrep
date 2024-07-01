@@ -1,35 +1,11 @@
 rules:
-- id: tainted-sql-string
-  languages: [java]
-  severity: ERROR
+- id: tainted-sqli
   message: >-
-    Detected user input used to manually construct a SQL string. This is usually
-    bad practice because manual construction could accidentally result in a SQL
-    injection. An attacker could use a SQL injection to steal or modify contents
-    of the database. Instead, use a parameterized query which is available
-    by default in most database engines. Alternatively, consider using an
-    object-relational mapper (ORM) such as Sequelize which will protect your queries.
-  options:
-    interfile: true
-  metadata:
-    references:
-    - https://owasp.org/www-community/attacks/SQL_Injection
-    category: security
-    owasp:
-    - A01:2017 - Injection
-    - A03:2021 - Injection
-    cwe:
-    - "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
-    technology:
-    - aws-lambda
-    cwe2022-top25: true
-    cwe2021-top25: true
-    subcategory:
-    - vuln
-    likelihood: MEDIUM
-    impact: HIGH
-    confidence: MEDIUM
-    interfile: true
+    (Modified) Detected SQL statement that is tainted by `$EVENT` object. This could lead to SQL
+    injection if variables in the SQL statement are not properly sanitized.
+    Use parameterized SQL queries or properly sanitize user input instead.
+  languages: [java]
+  severity: WARNING
   mode: taint
   pattern-sources:
   - patterns:
@@ -43,26 +19,63 @@ rules:
           $HANDLERTYPE $HANDLER(InputStream $EVENT, OutputStream $OUT, com.amazonaws.services.lambda.runtime.Context $CONTEXT) {
             ...
           }
+
+      - pattern: |
+          $HANDLERTYPE $HANDLER(..., ActionForm $EVENT, ...) {
+            ...
+          }
   pattern-sinks:
   - patterns:
     - pattern-either:
       - pattern: |
-          "$SQLSTR" + ...
+          (java.sql.CallableStatement $STMT) = ...
       - pattern: |
-          "$SQLSTR".concat(...)
+          (java.sql.Statement $STMT) = ...
+      - pattern: |
+          (java.sql.PreparedStatement $STMT) = ...
+      - pattern: |
+          $VAR = $CONN.prepareStatement(...)
+      - pattern: |
+          $PATH.queryForObject(...)
+      - pattern: |
+          $PATH.createSQLQuery(...)
+      - pattern: |
+          $PATH.createQuery(...)
+      - pattern: |
+          (java.util.Map<String, Object> $STMT) = $PATH.queryForMap(...)
+      - pattern: |
+          (org.springframework.jdbc.support.rowset.SqlRowSet $STMT) = ...
       - patterns:
         - pattern-inside: |
-            StringBuilder $SB = new StringBuilder("$SQLSTR");
+            (String $SQL) = "$SQLSTR" + ...;
             ...
-        - pattern: $SB.append(...)
-      - patterns:
-        - pattern-inside: |
-            $VAR = "$SQLSTR";
-            ...
-        - pattern: $VAR += ...
-      - pattern: String.format("$SQLSTR", ...)
-    - metavariable-regex:
-        metavariable: $SQLSTR
-        regex: (?i)(select|delete|insert|create|update|alter|drop)\b
-    - pattern-not-inside: |
-        System.out.$PRINTLN(...)
+        - pattern: $PATH.$SQLCMD(..., $SQL, ...);
+        - metavariable-regex:
+            metavariable: $SQLSTR
+            regex: (?i)(^SELECT.* | ^INSERT.* | ^UPDATE.*)
+        - metavariable-regex:
+            metavariable: $SQLCMD
+            regex: (execute|query|executeUpdate|batchUpdate)
+  options:
+    interfile: true
+  metadata:
+    category: security
+    technology:
+    - sql
+    - java
+    - aws-lambda
+    cwe:
+    - "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+    owasp:
+    - A01:2017 - Injection
+    - A03:2021 - Injection
+    references:
+    - https://owasp.org/Top10/A03_2021-Injection
+    cwe2022-top25: true
+    cwe2021-top25: true
+    subcategory:
+    - vuln
+    likelihood: MEDIUM
+    impact: HIGH
+    confidence: MEDIUM
+    interfile: true
