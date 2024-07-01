@@ -1,7 +1,7 @@
 rules:
 - id: tainted-sqli
   message: >-
-    Detected SQL statement that is tainted by `$EVENT` object. This could lead to SQL
+    (Modified) Detected SQL statement that is tainted by `$EVENT` object. This could lead to SQL
     injection if variables in the SQL statement are not properly sanitized.
     Use parameterized SQL queries or properly sanitize user input instead.
   languages: [java]
@@ -19,23 +19,32 @@ rules:
           $HANDLERTYPE $HANDLER(InputStream $EVENT, OutputStream $OUT, com.amazonaws.services.lambda.runtime.Context $CONTEXT) {
             ...
           }
+
+      - pattern: |
+          $HANDLERTYPE $HANDLER(..., ActionForm $EVENT, ...) {
+            ...
+          }
   pattern-sinks:
   - patterns:
     - pattern-either:
       - pattern: |
-          (java.sql.CallableStatement $STMT) = ...; 
+          (java.sql.CallableStatement $STMT) = ...
       - pattern: |
-          (java.sql.Statement $STMT) = ...;
+          (java.sql.Statement $STMT) = ...
       - pattern: |
-          (java.sql.PreparedStatement $STMT) = ...;
+          (java.sql.PreparedStatement $STMT) = ...
       - pattern: |
           $VAR = $CONN.prepareStatement(...)
       - pattern: |
-          $PATH.queryForObject(...);
+          $PATH.queryForObject(...)
       - pattern: |
-          (java.util.Map<String, Object> $STMT) = $PATH.queryForMap(...);
+          $PATH.createSQLQuery(...)
       - pattern: |
-          (org.springframework.jdbc.support.rowset.SqlRowSet $STMT) = ...;
+          $PATH.createQuery(...)
+      - pattern: |
+          (java.util.Map<String, Object> $STMT) = $PATH.queryForMap(...)
+      - pattern: |
+          (org.springframework.jdbc.support.rowset.SqlRowSet $STMT) = ...
       - patterns:
         - pattern-inside: |
             (String $SQL) = "$SQLSTR" + ...;
