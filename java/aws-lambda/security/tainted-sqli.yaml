@@ -21,9 +21,12 @@ rules:
           }
 
       - pattern: |
-          $HANDLERTYPE $HANDLER(..., ActionForm $EVENT, ...) {
+          $HANDLERTYPE $HANDLER(..., $ACTFORM $EVENT, ...) {
             ...
           }
+    - metavariable-regex:
+          metavariable: $ACTFORM
+          regex: .+Form
   pattern-sinks:
   - patterns:
     - pattern-either:
