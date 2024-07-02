@@ -26,7 +26,7 @@ rules:
           }
     - metavariable-regex:
           metavariable: $ACTFORM
-          regex: .+Form
+          regex: .+Form|String
   pattern-sinks:
   - patterns:
     - pattern-either:
