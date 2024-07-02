@@ -1,12 +1,11 @@
 rules:
   - id: find-sql-string-concatenation-struts
-    message: >-
-      (CustomRules) SQL Injection In Class `$CLASS` method `$METHOD`.
-      `$X` is used to construct a SQL query via string concatenation and get parameter `$VALUE` using function `$XF`.
     languages:
       - java
     severity: ERROR
-    
+    message: (CustomRules) SQL Injection In Class `$CLASS` method `$METHOD`. `$X` is
+      used to construct a SQL query via string concatenation and get parameter
+      `$VALUE` using function `$XF`.
     patterns:
       - pattern-either:
           - pattern: $QUERY = $QUERY + $X.$XF($VALUE)
@@ -14,15 +13,32 @@ rules:
           - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE)
           - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE) + ...
 
+          - pattern: $QUERY = $QUERY + $X.$XF($VALUE).$Y()
+          - pattern: $QUERY = $QUERY + $X.$XF($VALUE).$Y() + ...
+          - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE).$Y()
+          - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE).$Y() + ...
+
+
+
           - pattern: $QUERY = $X.$XF($VALUE) + ...
           - pattern: $QUERY = ... + $X.$XF($VALUE)
           - pattern: $QUERY = ... + $X.$XF($VALUE) + ...
+
+          - pattern: $QUERY = $X.$XF($VALUE).$Y() + ...
+          - pattern: $QUERY = ... + $X.$XF($VALUE).$Y()
+          - pattern: $QUERY = ... + $X.$XF($VALUE).$Y() + ...
+
+
 
           - pattern: $QUERY += $X.$XF($VALUE)
           - pattern: $QUERY += $X.$XF($VALUE) + ...
           - pattern: $QUERY += ... + $X.$XF($VALUE)
           - pattern: $QUERY += ... + $X.$XF($VALUE) + ...
 
+          - pattern: $QUERY += $X.$XF($VALUE).$Y()
+          - pattern: $QUERY += $X.$XF($VALUE).$Y() + ...
+          - pattern: $QUERY += ... + $X.$XF($VALUE).$Y()
+          - pattern: $QUERY += ... + $X.$XF($VALUE).$Y() + ...
       - pattern-not-regex: .+setString(.+)
       - pattern-not-regex: .+getAttribute(.+)
       - pattern-inside: |
