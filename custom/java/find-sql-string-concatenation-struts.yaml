@@ -37,6 +37,9 @@ rules:
           - pattern: $QUERY += $X.$XF($VALUE).$Y() + ...
           - pattern: $QUERY += ... + $X.$XF($VALUE).$Y()
           - pattern: $QUERY += ... + $X.$XF($VALUE).$Y() + ...
+      - metavariable-regex:
+          metavariable: $XF
+          regex: get.+
       - pattern-not-regex: .+setString(.+)
       - pattern-not-regex: .+getAttribute(.+)
       - pattern-inside: |
