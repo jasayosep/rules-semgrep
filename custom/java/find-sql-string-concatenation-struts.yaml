@@ -3,9 +3,7 @@ rules:
     languages:
       - java
     severity: ERROR
-    message: (CustomRules) SQL Injection In Class `$CLASS` method `$METHOD`. `$X` is
-      used to construct a SQL query via string concatenation and get parameter
-      `$VALUE` using function `$XF`.
+    message: (CustomRules) SQL Injection In Class `$CLASS` method `$METHOD`. `$X` is used to construct a SQL query via string concatenation and get parameter `$VALUE` using function `$XF`.
     patterns:
       - pattern-either:
           - pattern: $QUERY = $QUERY + $X.$XF($VALUE)
@@ -55,8 +53,7 @@ rules:
         - struts
       confidence: MEDIUM
       cwe:
-        - "CWE-89: Improper Neutralization of Special Elements used in an SQL
-          Command ('SQL Injection')"
+        - "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
       owasp:
         - A01:2017 - Injection
         - A03:2021 - Injection
