@@ -1,9 +1,7 @@
 rules:
 - id: tainted-sqli
   message: >-
-    (Modified) Detected SQL statement that is tainted by `$EVENT` object. This could lead to SQL
-    injection if variables in the SQL statement are not properly sanitized.
-    Use parameterized SQL queries or properly sanitize user input instead.
+    (Modified) Detected SQL statement that is tainted by `$EVENT` object. This could lead to SQL injection if variables in the SQL statement are not properly sanitized. Use parameterized SQL queries or properly sanitize user input instead.
   languages: [java]
   severity: WARNING
   mode: taint
@@ -19,7 +17,6 @@ rules:
           $HANDLERTYPE $HANDLER(InputStream $EVENT, OutputStream $OUT, com.amazonaws.services.lambda.runtime.Context $CONTEXT) {
             ...
           }
-
       - pattern: |
           $HANDLERTYPE $HANDLER(..., $ACTFORM $EVENT, ...) {
             ...
