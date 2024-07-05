@@ -3,66 +3,53 @@ rules:
     languages:
       - java
     severity: ERROR
-    mode: taint
     message: (CustomRules) SQL Injection In Class `$CLASS` method `$METHOD`. `$X` is used to construct a SQL query via string concatenation and get parameter `$VALUE` using function `$XF`.
-    pattern-sources:
-      - patterns:
-        - focus-metavariable: $EVENT
-        - pattern-either:
-          - pattern: |
-              $HANDLERTYPE $HANDLER(..., $ACTFORM $EVENT, ...) {
-                ...
-              }
-        - metavariable-regex:
-            metavariable: $ACTFORM
-            regex: .+Form|String
-    pattern-sinks:
-      - patterns:
-        - pattern-either:
-            - pattern: $QUERY = $QUERY + $X.$XF($VALUE)
-            - pattern: $QUERY = $QUERY + $X.$XF($VALUE) + ...
-            - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE)
-            - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE) + ...
-  
-            - pattern: $QUERY = $QUERY + $X.$XF($VALUE).$Y()
-            - pattern: $QUERY = $QUERY + $X.$XF($VALUE).$Y() + ...
-            - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE).$Y()
-            - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE).$Y() + ...
-  
-  
-  
-            - pattern: $QUERY = $X.$XF($VALUE) + ...
-            - pattern: $QUERY = ... + $X.$XF($VALUE)
-            - pattern: $QUERY = ... + $X.$XF($VALUE) + ...
-  
-            - pattern: $QUERY = $X.$XF($VALUE).$Y() + ...
-            - pattern: $QUERY = ... + $X.$XF($VALUE).$Y()
-            - pattern: $QUERY = ... + $X.$XF($VALUE).$Y() + ...
-  
-  
-  
-            - pattern: $QUERY += $X.$XF($VALUE)
-            - pattern: $QUERY += $X.$XF($VALUE) + ...
-            - pattern: $QUERY += ... + $X.$XF($VALUE)
-            - pattern: $QUERY += ... + $X.$XF($VALUE) + ...
-  
-            - pattern: $QUERY += $X.$XF($VALUE).$Y()
-            - pattern: $QUERY += $X.$XF($VALUE).$Y() + ...
-            - pattern: $QUERY += ... + $X.$XF($VALUE).$Y()
-            - pattern: $QUERY += ... + $X.$XF($VALUE).$Y() + ...
-        - metavariable-regex:
-            metavariable: $XF
-            regex: get.+
-        - pattern-not-regex: .+setString(.+)
-        - pattern-not-regex: .+getAttribute(.+)
-        - pattern-inside: |
-            class $CLASS {
-              ...
-            }
-        - pattern-inside: |
-            $METHOD(...){
-              ...
-            }
+    patterns:
+      - pattern-either:
+          - pattern: $QUERY = $QUERY + $X.$XF($VALUE)
+          - pattern: $QUERY = $QUERY + $X.$XF($VALUE) + ...
+          - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE)
+          - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE) + ...
+
+          - pattern: $QUERY = $QUERY + $X.$XF($VALUE).$Y()
+          - pattern: $QUERY = $QUERY + $X.$XF($VALUE).$Y() + ...
+          - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE).$Y()
+          - pattern: $QUERY = $QUERY + ... + $X.$XF($VALUE).$Y() + ...
+
+
+
+          - pattern: $QUERY = $X.$XF($VALUE) + ...
+          - pattern: $QUERY = ... + $X.$XF($VALUE)
+          - pattern: $QUERY = ... + $X.$XF($VALUE) + ...
+
+          - pattern: $QUERY = $X.$XF($VALUE).$Y() + ...
+          - pattern: $QUERY = ... + $X.$XF($VALUE).$Y()
+          - pattern: $QUERY = ... + $X.$XF($VALUE).$Y() + ...
+
+
+
+          - pattern: $QUERY += $X.$XF($VALUE)
+          - pattern: $QUERY += $X.$XF($VALUE) + ...
+          - pattern: $QUERY += ... + $X.$XF($VALUE)
+          - pattern: $QUERY += ... + $X.$XF($VALUE) + ...
+
+          - pattern: $QUERY += $X.$XF($VALUE).$Y()
+          - pattern: $QUERY += $X.$XF($VALUE).$Y() + ...
+          - pattern: $QUERY += ... + $X.$XF($VALUE).$Y()
+          - pattern: $QUERY += ... + $X.$XF($VALUE).$Y() + ...
+      - metavariable-regex:
+          metavariable: $XF
+          regex: get.+
+      - pattern-not-regex: .+setString(.+)
+      - pattern-not-regex: .+getAttribute(.+)
+      - pattern-inside: |
+          class $CLASS {
+            ...
+          }
+      - pattern-inside: |
+          $METHOD(...){
+            ...
+          }
     metadata:
       category: security
       technology:
