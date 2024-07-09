@@ -56,8 +56,6 @@ rules:
         - metavariable-regex:
             metavariable: $SQLCMD
             regex: (execute|query|executeUpdate|batchUpdate)
-  options:
-    interfile: true
   metadata:
     category: security
     technology:
@@ -78,4 +76,3 @@ rules:
     likelihood: MEDIUM
     impact: HIGH
     confidence: MEDIUM
-    interfile: true
