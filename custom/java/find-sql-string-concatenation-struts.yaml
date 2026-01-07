@@ -30,15 +30,7 @@ rules:
           - pattern: $QUERY = $X.$XF($VALUE).$Y() + ...
           - pattern: $QUERY = ... + $X.$XF($VALUE).$Y()
           - pattern: $QUERY = ... + $X.$XF($VALUE).$Y() + ...
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-          
->>>>>>> e6e690b (add pattern)
-=======
-          
->>>>>>> b04712f (update ruless)
           - pattern: $QUERY = $X.$XF($VALUE).$Y().$Z() + ...
           - pattern: $QUERY = ... + $X.$XF($VALUE).$Y().$Z()
           - pattern: $QUERY = ... + $X.$XF($VALUE).$Y().$Z() + ...
